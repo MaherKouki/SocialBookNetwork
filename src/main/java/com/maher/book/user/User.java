@@ -3,13 +3,19 @@ package com.maher.book.user;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CollectionId;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.Role;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -35,15 +41,31 @@ public class User implements UserDetails, Principal {
     private boolean accountLocked;
     private boolean enabled;
 
+    @CreatedDate
+    @Column(nullable = false , updatable = false)
+    private LocalDateTime createdDate;
+
+    @CreatedDate
+    @Column(insertable = false)
+    private LocalDateTime lastModifiedDate;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles;
+
+
 
     @Override
     public String getName() {
         return email;
     }
 
+
+    //////////////////////////////////
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.roles
+                .stream()
+                .map(r-> new SimpleGrantedAuthority(r.getRoleName())).collect(Collectors.toList());
     }
 
     @Override
