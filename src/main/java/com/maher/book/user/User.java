@@ -1,5 +1,6 @@
 package com.maher.book.user;
 
+import com.maher.book.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CollectionId;
@@ -9,7 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
+
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,8 +66,10 @@ public class User implements UserDetails, Principal {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles
                 .stream()
-                .map(r-> new SimpleGrantedAuthority(r.getRoleName())).collect(Collectors.toList());
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public String getPassword() {
