@@ -1,13 +1,20 @@
 package com.maher.book.auth;
 
+import com.maher.book.email.EmailService;
+import com.maher.book.email.EmailTemplateName;
 import com.maher.book.role.RoleRepository;
 import com.maher.book.user.Token;
+import com.maher.book.user.TokenRepository;
 import com.maher.book.user.User;
 import com.maher.book.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,6 +24,14 @@ public class AuthenticationService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
+    private final EmailService emailService;
+
+
+
+
+    //@Value("${application.mailing.frontend.activation-url}")
+    //private String activationUrl;
 
     public void register(RegistrationRequest request){
 
@@ -39,11 +54,38 @@ public class AuthenticationService {
     private void sendValidationEmail(User user) {
         var newToken = generateAndSaveActivationToken(user);
         //sen email
+        emailService.sendEmail(
+                user.getEmail(),
+                user.fullName(),
+                EmailTemplateName.ACTIVATE_ACCOUNT,
+                activationUrl,
+                newToken,
+                "Account activation"
+        );
     }
 
     private String generateAndSaveActivationToken(User user) {
 
-        return null;
+        String generatedToken = generateActivationCode(6);
+        var token = Token.builder()
+                .token(generatedToken)
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .user(user)
+                .build();
+        tokenRepository.save(token);
+        return generatedToken;
+    }
+
+    private String generateActivationCode(int length) {
+        String characters = "0123456789";
+        StringBuilder codeBuilder = new StringBuilder();
+        SecureRandom secureRandom = new SecureRandom();
+        for (int i=0;i<length;i++){
+            int ramdomIndex = secureRandom.nextInt(characters.length());
+            codeBuilder.append(characters.charAt(ramdomIndex));
+        }
+        return codeBuilder.toString();
     }
 
 
