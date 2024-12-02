@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +53,7 @@ public class AuthenticationService {
         sendValidationEmail(user);
     }
 
-    @Transactional
+    //@Transactional
     public void activateAccount(String token) throws MessagingException {
         Token savedToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid token"));
@@ -84,7 +85,7 @@ public class AuthenticationService {
         );
     }
 
-    private String generateAndSaveActivationToken(User user) {
+    /*private String generateAndSaveActivationToken(User user) {
         String token = generateActivationCode(6);
         var savedToken = Token.builder()
                 .token(token)
@@ -94,6 +95,18 @@ public class AuthenticationService {
                 .build();
         tokenRepository.save(savedToken);
         return token;
+    }*/
+
+    private String generateAndSaveActivationToken(User user) {
+        String generatedToken = generateActivationCode(6);
+        var token = Token.builder()
+                .token(generatedToken)
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .user(user)
+                .build();
+        tokenRepository.save(token);
+        return generatedToken;
     }
 
     private String generateActivationCode(int length) {
@@ -123,4 +136,9 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken).build();
     }
+
+
+
+
+
 }
