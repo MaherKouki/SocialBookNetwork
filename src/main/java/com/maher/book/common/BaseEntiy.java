@@ -1,8 +1,5 @@
-package com.maher.book.feedback;
+package com.maher.book.common;
 
-
-import com.maher.book.book.Book;
-import com.maher.book.common.BaseEntiy;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,24 +14,33 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Feedback extends BaseEntiy {
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public class BaseEntiy {
 
 
+    @Id
+    @GeneratedValue
+    private Integer id;
+    @CreatedDate
+    @Column(nullable = false,updatable = false)
+    private LocalDateTime createDate;
 
-    private Double note;
-
-    private String comment;
-
-
-    @ManyToOne
-    @JoinColumn(name="book_id")
-    private Book book;
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime modifiedDate;
 
 
+    @CreatedBy
+    @Column(nullable = false,updatable = false)
+    private Integer createdBy;
+
+    @LastModifiedBy
+    @Column(insertable = false)
+    private Integer modifiedBy;
 }
