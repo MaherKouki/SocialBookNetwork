@@ -15,7 +15,23 @@ public class BookMapper {
                 .shareable(request.shareable())
                 .shareable(false)
                 .build();
-    }
+    }/////////////fromDTO
+
+    public BookResponse toBookResponse(Book book){
+        return BookResponse
+                .builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .authName(book.getAuthorName())
+                .isbn(book.getIsbn())
+                .synopsis(book.getSynopsis())
+                .rate(book.getRate())
+                .archived(book.isArchived())
+                .shareable(book.isShareable())
+                .owner(book.getOwner().fullName())
+                //.cover()
+                .build();
+    }/////////////ToDTO
 
 
 }
