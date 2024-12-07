@@ -2,6 +2,8 @@ package com.maher.book.book;
 
 
 import com.maher.book.common.PageResponse;
+import com.maher.book.history.BookTransactionHistory;
+import com.maher.book.history.BookTransactionHistoryRepository;
 import com.maher.book.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,8 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
-
-
     private final BookMapper bookMapper;
+    private final BookTransactionHistoryRepository transactionHistoryRepository;
 
     public Integer save(BookRequest request, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
@@ -74,5 +75,23 @@ public class BookService {
                 books.isLast()
         );
 
+    }
+
+    public PageResponse<BorrowedBookResponse> findAllBorrowedBooks(int page, int size, Authentication connectedUser) {
+        User user = ((User) connectedUser.getPrincipal());
+        Pageable pageable = PageRequest.of(page , size, Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> allBorrowedBooks = transactionHistoryRepository.findAllBorrowedBooks(pageable , user.getId());
+        List<BorrowedBookResponse> bookResponse = allBorrowedBooks.stream()
+                .map(bookMapper::toBorrowedBookResponse)
+                .toList();
+        return new PageResponse<>(
+                bookResponse,
+                allBorrowedBooks.getNumber(),
+                allBorrowedBooks.getSize(),
+                allBorrowedBooks.getTotalElements(),
+                allBorrowedBooks.getTotalPages(),
+                allBorrowedBooks.isFirst(),
+                allBorrowedBooks.isLast()
+        );
     }
 }

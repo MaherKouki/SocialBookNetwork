@@ -1,6 +1,7 @@
 package com.maher.book.book;
 
 
+import com.maher.book.history.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +23,7 @@ public class BookMapper {
                 .builder()
                 .id(book.getId())
                 .title(book.getTitle())
-                .authName(book.getAuthorName())
+                .authorName(book.getAuthorName())
                 .isbn(book.getIsbn())
                 .synopsis(book.getSynopsis())
                 .rate(book.getRate())
@@ -34,4 +35,17 @@ public class BookMapper {
     }
 
 
+    public BorrowedBookResponse toBorrowedBookResponse(BookTransactionHistory history) {
+
+        return BorrowedBookResponse
+                .builder()
+                .id(history.getBook().getId())
+                .title(history.getBook().getTitle())
+                .authorName(history.getBook().getAuthorName())
+                .isbn(history.getBook().getIsbn())
+                .rate(history.getBook().getRate())
+                .returned(history.isReturned())
+                .returnApproved(history.isReturnedApproved())
+                .build();
+    }
 }

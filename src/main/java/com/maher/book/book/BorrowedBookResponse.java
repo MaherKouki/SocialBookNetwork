@@ -1,5 +1,6 @@
 package com.maher.book.book;
 
+
 import lombok.*;
 
 @Getter
@@ -7,18 +8,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookResponse {
-
+public class BorrowedBookResponse {
     private Integer id;
     private String title;
     private String authorName;
     private String isbn;
-    private String synopsis;
-    private String owner;
-    private byte[] cover;
-    private boolean archived;
     private double rate;
-    private boolean shareable;
-
-
+    private boolean returned;
+    private boolean returnApproved;
 }
