@@ -56,4 +56,12 @@ public class BookService {
                 books.isLast()
         );
     }
+
+    public PageResponse<BookResponse> findAllBooksByOwner(int page, int size, Authentication connectedUser) {
+        User user = ((User) connectedUser.getPrincipal());
+        Pageable pageable = PageRequest.of(page , size, Sort.by("createdDate").descending());
+        Page<Book> books = bookRepository.findAll(spec , pageable);
+        return null;
+
+    }
 }
