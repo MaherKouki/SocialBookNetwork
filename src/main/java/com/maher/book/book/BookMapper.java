@@ -15,7 +15,7 @@ public class BookMapper {
                 .shareable(request.shareable())
                 .shareable(false)
                 .build();
-    }/////////////fromDTO
+    }
 
     public BookResponse toBookResponse(Book book){
         return BookResponse
@@ -31,7 +31,7 @@ public class BookMapper {
                 .owner(book.getOwner().fullName())
                 //.cover()
                 .build();
-    }/////////////ToDTO
+    }
 
 
 }
