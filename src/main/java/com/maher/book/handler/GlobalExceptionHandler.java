@@ -1,5 +1,6 @@
 package com.maher.book.handler;
 
+import com.maher.book.exception.OperationNotPermittedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -89,7 +90,7 @@ public class GlobalExceptionHandler {
                                 .error(exp.getMessage())
                                 .build()
                 );
-    }
+    }*/
 
     @ExceptionHandler(OperationNotPermittedException.class)
     public ResponseEntity<ExceptionResponse> handleException(OperationNotPermittedException exp) {
@@ -100,7 +101,7 @@ public class GlobalExceptionHandler {
                                 .error(exp.getMessage())
                                 .build()
                 );
-    }*/
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exp) {
