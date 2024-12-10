@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -206,6 +207,10 @@ public class BookService {
 
         bookTransactionHistory.setReturnedApproved(true);
         return transactionHistoryRepository.save(bookTransactionHistory).getId();
+
+    }
+
+    public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {
 
     }
 }
