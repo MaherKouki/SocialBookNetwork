@@ -3,6 +3,7 @@ package com.maher.book.book;
 
 import com.maher.book.common.PageResponse;
 import com.maher.book.exception.OperationNotPermittedException;
+import com.maher.book.file.FileStorageService;
 import com.maher.book.history.BookTransactionHistory;
 import com.maher.book.history.BookTransactionHistoryRepository;
 import com.maher.book.user.User;
@@ -26,6 +27,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookTransactionHistoryRepository transactionHistoryRepository;
+    private final FileStorageService fileStorageService;
 
     public Integer save(BookRequest request, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
@@ -211,6 +213,15 @@ public class BookService {
     }
 
     public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(()-> new EntityNotFoundException("No book found with the id : "+ bookId));
 
+        User user = ((User) connectedUser.getPrincipal());
+        if(Objects.equals(book.getOwner().getId(),user.getId())){
+            throw new OperationNotPermittedException("You cannot borrow or return your owen book");
+        }
+        var bookCover = fileStorageService.saveFile(file, bookId , user.getId());
+        book.setBookCover(bookCover);
+        bookRepository.save(book);
     }
 }
