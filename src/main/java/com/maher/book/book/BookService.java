@@ -220,7 +220,7 @@ public class BookService {
         if(Objects.equals(book.getOwner().getId(),user.getId())){
             throw new OperationNotPermittedException("You cannot borrow or return your owen book");
         }
-        var bookCover = fileStorageService.saveFile(file, bookId , user.getId());
+        var bookCover = fileStorageService.saveFile(file, user.getId());
         book.setBookCover(bookCover);
         bookRepository.save(book);
     }
