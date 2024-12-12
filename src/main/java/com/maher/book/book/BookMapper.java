@@ -1,7 +1,9 @@
 package com.maher.book.book;
 
 
+import com.maher.book.file.FileUtils;
 import com.maher.book.history.BookTransactionHistory;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +32,7 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
                 .owner(book.getOwner().fullName())
-                //.cover()
+                .cover(FileUtils.readFileFromLocation(book.getBookCover()))
                 .build();
     }
 

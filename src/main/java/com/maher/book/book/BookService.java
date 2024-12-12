@@ -215,7 +215,6 @@ public class BookService {
     public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(()-> new EntityNotFoundException("No book found with the id : "+ bookId));
-
         User user = ((User) connectedUser.getPrincipal());
         if(Objects.equals(book.getOwner().getId(),user.getId())){
             throw new OperationNotPermittedException("You cannot borrow or return your owen book");
