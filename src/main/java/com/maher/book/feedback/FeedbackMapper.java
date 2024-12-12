@@ -1,7 +1,10 @@
 package com.maher.book.feedback;
 
 import com.maher.book.book.Book;
+import org.springframework.stereotype.Service;
 
+
+@Service
 public class FeedbackMapper {
 
 
