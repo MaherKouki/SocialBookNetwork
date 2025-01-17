@@ -9,9 +9,14 @@ import com.maher.book.exception.OperationNotPermittedException;
 import com.maher.book.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -40,6 +45,13 @@ public class FeedbackService {
     }
 
     public PageResponse<FeedbackResponse> findAllFeedbacksByBook(Integer bookId, int page, int size, Authentication connectedUser) {
+        Pageable pageable  = PageRequest.of(page,size);
+        User user = ((User) connectedUser.getPrincipal());
+        Page<Feedback> feedbacks = feedbackRepository.findAllByBookId(bookId ,pageable);
+        List<FeedbackResponse> feedbackResponses = feedbacks.stream()
+                .map(f-> feedbackMapper.toFeedbackResponse(f,user.getId()))
+                .toList();
+
         return null;
     }
 }
