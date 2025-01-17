@@ -4,6 +4,7 @@ package com.maher.book.feedback;
 import com.maher.book.book.Book;
 import com.maher.book.book.BookRepository;
 import com.maher.book.book.BookResponse;
+import com.maher.book.common.PageResponse;
 import com.maher.book.exception.OperationNotPermittedException;
 import com.maher.book.user.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,6 +37,10 @@ public class FeedbackService {
 
         return feedbackRepository.save(feedback).getId();
 
+    }
+
+    public PageResponse<FeedbackResponse> findAllFeedbacksByBook(Integer bookId, int page, int size, Authentication connectedUser) {
+        return null;
     }
 }
 
