@@ -52,7 +52,15 @@ public class FeedbackService {
                 .map(f-> feedbackMapper.toFeedbackResponse(f,user.getId()))
                 .toList();
 
-        return null;
+        return new PageResponse<FeedbackResponse>(
+                feedbackResponses,
+                feedbacks.getNumber(),
+                feedbacks.getSize(),
+                feedbacks.getTotalElements(),
+                feedbacks.getTotalPages(),
+                feedbacks.isFirst(),
+                feedbacks.isLast()
+        );
     }
 }
 
